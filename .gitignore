@@ -1,3 +1,6 @@
+# Decipher's temp folder
+.decipher/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
