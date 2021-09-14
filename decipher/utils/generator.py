@@ -43,8 +43,8 @@ class DatasetGenerator(metaclass=Singleton):
     """
 
     threads: int = os.cpu_count() or 1
-    working_path: str = '.decipher/'
-    dataset_path: str = 'dataset/'
+    working_path: str = ".decipher/"
+    dataset_path: str = "dataset/"
 
     def __init__(self) -> None:
         super().__init__()
@@ -55,8 +55,8 @@ class DatasetGenerator(metaclass=Singleton):
         if not os.path.exists(self.working_path):
             os.mkdir(self.working_path)
 
-        if not os.path.exists(f'{self.working_path}{self.dataset_path}'):
-            os.mkdir(f'{self.working_path}{self.dataset_path}')
+        if not os.path.exists(f"{self.working_path}{self.dataset_path}"):
+            os.mkdir(f"{self.working_path}{self.dataset_path}")
 
     def generate_thread(self, ciphers: List[str], thread_id: ValueProxy) -> None:
         """
@@ -67,8 +67,9 @@ class DatasetGenerator(metaclass=Singleton):
             thread_id (ValueProxy): Shareable int variable for identifying threads
         """
 
-        assert os.path.exists(f'{self.working_path}{self.dataset_path}'), \
-            """
+        assert os.path.exists(
+            f"{self.working_path}{self.dataset_path}"
+        ), """
             Dataset directory does not exist. Please make one by calling
             the `DatasetGenerator.make()` function.
 
@@ -77,4 +78,5 @@ class DatasetGenerator(metaclass=Singleton):
 
         thread_id.value += 1
         print(f"Started thread {thread_id.value}")
+
         print(ciphers[0])
