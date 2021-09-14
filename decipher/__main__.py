@@ -2,6 +2,7 @@ import nltk
 import itertools
 import multiprocessing as mp
 
+from decipher.ui.cli import DecipherParser
 from decipher.utils.generator import DatasetGenerator
 
 manager = mp.Manager()
@@ -19,3 +20,5 @@ if __name__ == '__main__':
                 itertools.repeat(thread_id),
             ),
         )
+
+    DecipherParser().parse_args()
