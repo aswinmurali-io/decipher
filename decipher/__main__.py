@@ -1,24 +1,26 @@
 import nltk
+import ctypes
 import itertools
 import multiprocessing as mp
+import decipher.utils.generator as gen
 
 from decipher.ui.cli import DecipherParser
-from decipher.utils.generator import DatasetGenerator
+from multiprocessing.managers import ValueProxy
+from typing import Final
 
-manager = mp.Manager()
-generator = DatasetGenerator()
-generator.make()
 
-if __name__ == '__main__':
-    thread_id = manager.Value('i', 0)
+mgr: Final = mp.Manager()
 
-    with mp.Pool(generator.threads) as pool:
+gen.make()
+keys: Final = [list(range(0, 100))] * gen.threads
+corpus_words: Final = gen.split(list(nltk.corpus.words.words()), splits=gen.threads)
+
+if __name__ == "__main__":
+    thread_id: ValueProxy = mgr.Value(ctypes.c_int, 0)
+
+    with mp.Pool(gen.threads) as pool:
         pool.starmap(
-            generator.generate_thread,
-            zip(
-                [nltk.corpus.words.words()] * generator.threads,
-                itertools.repeat(thread_id),
-            ),
+            gen.generate_thread, zip(corpus_words, itertools.repeat(thread_id), keys),
         )
 
-    DecipherParser().parse_args()
+    # DecipherParser().parse_args()
