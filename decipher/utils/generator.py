@@ -1,82 +1,106 @@
 """
 Generates cipher encoded dataset for decipher.
+
+Example: -
+
+```python
+import itertools
+import multiprocessing as mp
+import decipher.utils.generator as gen
+
+mgr: Final = mp.Manager()
+
+# Setup the dataset path
+gen.make()
+
+keys: Final = gen.split(range(0, 100), splits=gen.threads)
+corpus_words: Final = gen.split(nltk.corpus.words.words(), splits=gen.threads)
+
+if __name__ == "__main__":
+    thread_id: ValueProxy = mgr.Value(ctypes.c_int, 0)
+
+    with mp.Pool(gen.threads) as pool:
+        pool.starmap(
+            gen.generate_thread, zip(corpus_words, itertools.repeat(thread_id), keys),
+        )
+```
+
+Refer`generate_thread(...)`function for more information
+on the generating process parameter(s).
 """
 
 import os
+import numpy
 
-from typing import List
-from decipher.utils.singleton import Singleton
+from caesarcipher import CaesarCipher
+
+from typing import Any, Iterable, List
 from multiprocessing.managers import ValueProxy
 
 
-class DatasetGenerator(metaclass=Singleton):
+threads: int = os.cpu_count() or 1
+working_path: str = ".decipher/"
+dataset_path: str = "dataset/"
+dataset_filename: str = "nltk-corpus.csv"
+
+
+def make() -> None:
+    """Setup the decipher's dataset folder."""
+
+    if not os.path.exists(working_path):
+        os.mkdir(working_path)
+
+    if not os.path.exists(f"{working_path}{dataset_path}"):
+        os.mkdir(f"{working_path}{dataset_path}")
+
+    if os.path.exists(f"{working_path}{dataset_path}/{dataset_filename}"):
+        os.remove(f"{working_path}{dataset_path}/{dataset_filename}")
+
+
+def split(iteratable: Iterable, splits: int = 1) -> Iterable[List[Any]]:
+    """Split any iterable into thread-ready individual iterables.
+
+    Args:
+        iteratable (Iterable): The iteratable variable that needs thready-ready split.
+        splits (int, optional): Number of splits to be done on the iterable. Defaults to 1.
+
+    Returns:
+        Iterable[List[Any]]: Returns the thread-ready split of the iteratable.
     """
-    `DatasetGenerator()`class generates the dataset for
-    decipher.
+    return numpy.array_split(iteratable, splits)
 
-    Example: -
 
-    ```python
-    import itertools
-    import multiprocessing as mp
-    from decipher.utils.generator import DatasetGenerator
+def generate_thread(ciphers: List[str], thread_id: ValueProxy, keys: List[int]) -> None:
+    """
+    Generate the dataset (thread-ready).
 
-    manager = mp.Manager()
-    generator = DatasetGenerator()
-    generator.make()
-
-    if __name__ == '__main__':
-        thread_id = manager.Value('i', 0)
-
-        with mp.Pool(generator.threads) as pool:
-            pool.starmap(
-                generator.generate_thread,
-                zip(
-                    [nltk.corpus.words.words()] * generator.threads,
-                    itertools.repeat(thread_id),
-                ),
-            )
-    ```
-
-    Refer`generate_thread(...)`function for more information
-    on the generating process parameter(s).
+    Args:
+        ciphers (List[str]): List of words that needs to encrypted.
+        thread_id (ValueProxy[int]): Shareable int variable for identifying threads.
+        keys (List[int]): List of keys to generate the encrypted words.
     """
 
-    threads: int = os.cpu_count() or 1
-    working_path: str = ".decipher/"
-    dataset_path: str = "dataset/"
+    assert os.path.exists(
+        f"{working_path}{dataset_path}"
+    ), """
+        Dataset directory does not exist. Please make one by calling
+        the `make()` function.
 
-    def __init__(self) -> None:
-        super().__init__()
-
-    def make(self) -> None:
-        """Setup the decipher's dataset folder."""
-
-        if not os.path.exists(self.working_path):
-            os.mkdir(self.working_path)
-
-        if not os.path.exists(f"{self.working_path}{self.dataset_path}"):
-            os.mkdir(f"{self.working_path}{self.dataset_path}")
-
-    def generate_thread(self, ciphers: List[str], thread_id: ValueProxy) -> None:
-        """
-        Generate the dataset (thread-ready).
-
-        Args:
-            ciphers (List[str]): List of words that needs to encrypted.
-            thread_id (ValueProxy): Shareable int variable for identifying threads
+        Refer `make()` for more details.
         """
 
-        assert os.path.exists(
-            f"{self.working_path}{self.dataset_path}"
-        ), """
-            Dataset directory does not exist. Please make one by calling
-            the `DatasetGenerator.make()` function.
+    thread_id.value += 1
+    print(f"Started thread {thread_id.value}")
 
-            Refer `DatasetGenerator.make()` for more details.
-            """
+    with open(f"{working_path}{dataset_path}/nltk-corpus.csv", "a") as csv:
+        for word in ciphers[1:100]:
+            for key in keys:
+                result = CaesarCipher(word, offset=key).encoded
+                print(
+                    f"thread={thread_id.value}, word={word}, key={key}, cipher={result}",
+                    end="\r",
+                )
+                csv.write(f"{word},{key},{result}\n")
 
-        thread_id.value += 1
-        print(f"Started thread {thread_id.value}")
-
-        print(ciphers[0])
+    # Alert when done
+    print("\a")
