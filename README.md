@@ -1,7 +1,4 @@
 # Decipher
-
-(Work in progress)
-
 An 💻open-source tool for 🔓 cracking cipher-encrypted files.
 
 ![python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
@@ -9,7 +6,6 @@ An 💻open-source tool for 🔓 cracking cipher-encrypted files.
 ![numpy](https://img.shields.io/badge/Numpy-777BB4?style=for-the-badge&logo=numpy&logoColor=white)
 ![pandas](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)
 </br>
-
 [![CodeQL](https://github.com/aswinmurali-io/decipher/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/aswinmurali-io/decipher/actions/workflows/codeql-analysis.yml)
 ![Generic badge](https://img.shields.io/badge/welcome-decipher-green.svg)
 [![GitHub License](https://img.shields.io/github/license/aswinmurali-io/decipher.svg)](https://github.com/aswinmurali-io/decipher/blob/master/LICENSE)
