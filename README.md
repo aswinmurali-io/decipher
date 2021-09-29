@@ -2,7 +2,7 @@
 
 (Work in progress)
 
-An 💻open-Source tool for 🔓 cracking cipher-encrypted files.
+An 💻open-source tool for 🔓 cracking cipher-encrypted files.
 
 ![python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit_learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
