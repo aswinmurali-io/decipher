@@ -23,3 +23,19 @@ for this to work we need to use `nltk` dataset. To do this type the below code i
 import nltk
 nltk.download()
 ```
+
+## Usage
+
+```
+usage: decipher [options] path
+
+An 💻 Open-Source tool for 🔓 cracking cipher-encrypted files.    
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         Display verbose-level information
+  -g, --generate-dataset
+                        generates the default dataset for training
+
+Enjoy the program! 😄
+```
