@@ -17,7 +17,7 @@ An 💻open-source tool for 🔓 cracking cipher-encrypted files.
 [![GitHub Branches](https://badgen.net/github/branches/aswinmurali-io/decipher)](https://github.com/aswinmurali-io/decipher/)
 [![GitHub Contributors](https://img.shields.io/github/contributors/aswinmurali-io/decipher.svg)](https://github.com/aswinmurali-io/decipher/badges/graphs/contributors/)
 </br>
-Do you like the project? :)
+Do you like the project? :)</br>
 [![GitHub stars](https://img.shields.io/github/stars/aswinmurali-io/decipher.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/aswinmurali-io/decipher.svg/stargazers/)
 
 ## Setup
