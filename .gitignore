@@ -1,6 +1,9 @@
 # Decipher's temp folder
 .decipher/
 
+# Model files
+*.pkl
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
