@@ -1,5 +1,6 @@
 # Decipher's temp folder
 .decipher/
+words_alpha.txt
 
 # Model files
 *.pkl
