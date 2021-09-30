@@ -34,18 +34,30 @@ import nltk
 nltk.download()
 ```
 
+### Using custom word list
+
+By default `decipher` will use `nltk.corpus`. You can specify different word file by
+passing the `--word-list` arg with a file name.
+
+```bash
+git clone https://github.com/dwyl/english-words
+python -m decipher --generate-dataset --word-list english-words/words_alpha.txt
+```
+
 ## Usage
 
 ```
 usage: decipher [options] path
 
-An 💻 Open-Source tool for 🔓 cracking cipher-encrypted files.    
+An 💻 Open-Source tool for 🔓 cracking cipher-encrypted files.
 
 optional arguments:
   -h, --help            show this help message and exit
   -v, --verbose         Display verbose-level information
   -g, --generate-dataset
-                        generates the default dataset for training
+                        generates the default (nltk.corpus) dataset for training
+  -w PATH, --word-list PATH
+                        specify the word list file
 
-Enjoy the program! 😄
+Enjoy deciphering! 😄
 ```
