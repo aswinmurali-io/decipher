@@ -44,7 +44,8 @@ class DecipherDataFrame(object):
 
     def encode(self) -> Tuple[Any, numpy.ndarray]:
         self.encrypted_encoder = sklearn.feature_extraction.text.TfidfVectorizer()
-        self.source_encoder = sklearn.preprocessing.LabelEncoder()
+        # self.source_encoder = sklearn.preprocessing.LabelEncoder()
+        self.source_encoder = sklearn.feature_extraction.text.TfidfVectorizer()
 
         x_encoded = self.encrypted_encoder.fit_transform(self.dataframe["converted"])
         y_encoded = self.source_encoder.fit_transform(self.dataframe["source"])
