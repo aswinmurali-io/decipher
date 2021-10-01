@@ -41,7 +41,7 @@ from multiprocessing.managers import ValueProxy
 threads: int = os.cpu_count() or 1
 working_path: str = ".decipher/"
 dataset_path: str = "dataset/"
-dataset_filename: str = "nltk-corpus.csv"
+dataset_filename: str = "data.csv"
 
 
 def make() -> None:
@@ -92,8 +92,8 @@ def generate_thread(ciphers: List[str], thread_id: ValueProxy, keys: List[int]) 
     thread_id.value += 1
     print(f"Started thread {thread_id.value}")
 
-    with open(f"{working_path}{dataset_path}/nltk-corpus.csv", "a") as csv:
-        for word in ciphers[1:100]:
+    with open(f"{working_path}{dataset_path}/{dataset_filename}", "a") as csv:
+        for word in ciphers:
             for key in keys:
                 result = CaesarCipher(word, offset=key).encoded
                 print(
