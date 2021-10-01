@@ -32,9 +32,9 @@ class DecipherDataFrame(object):
         )
 
         # Selecting the dataset properly
-        self.dataframe = self.pick_properly(
-            classes=total_classes, total_keys=total_keys
-        )
+        # self.dataframe = self.pick_properly(
+        #     classes=total_classes, total_keys=total_keys
+        # )
 
         self.select_x_and_y()
 
@@ -105,7 +105,7 @@ class DecipherModel(sklearn.tree.DecisionTreeClassifier):
 
 
 if __name__ == "__main__":
-    path: Final = r"../../../decipher/.decipher/dataset/nltk-corpus.csv"
+    path: Final = r"../../../decipher/.decipher/dataset/data.csv"
 
     model = DecipherModel()
 
