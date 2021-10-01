@@ -11,6 +11,8 @@ from typing import Any, Final, Optional
 from argparse import Namespace
 from dataclasses import dataclass
 from decipher.utils.singleton import Singleton
+from decipher.utils.loader import DecipherModelLoader
+from decipher.experimental.model_v1 import DecipherModel
 from multiprocessing.managers import ValueProxy
 
 
@@ -81,7 +83,7 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
                 short_arg="-v",
                 long_arg="--verbose",
                 action="store_true",
-                help="Display verbose-level information",
+                help="display verbose-level information",
             ),
         ),
         ArgConfigSchema(
@@ -90,7 +92,26 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
                 short_arg="-g",
                 long_arg="--generate-dataset",
                 action="store_true",
-                help="generates the default (nltk.corpus) dataset for training",
+                help="generates the dataset for training",
+            ),
+        ),
+        ArgConfigSchema(
+            name="quick_train",
+            config=ArgConfigSchema.ArgDetails(
+                short_arg="-qt",
+                long_arg="--quick-train",
+                action="store_true",
+                help="quickly train the model by reducing complexity",
+            ),
+        ),
+        ArgConfigSchema(
+            name="train_model",
+            config=ArgConfigSchema.ArgDetails(
+                short_arg="-t",
+                long_arg="--train-model",
+                action="store_true",
+                # TODO: change this to support multi-model support
+                help="train the model (uses model_v1)",
             ),
         ),
         ArgConfigSchema(
@@ -101,7 +122,29 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
                 action=None,
                 metavar="PATH",
                 type=str,
-                help="specify the word list file",
+                help="specify the word list file, default is nltk.corpus",
+            ),
+        ),
+        ArgConfigSchema(
+            name="input_file",
+            config=ArgConfigSchema.ArgDetails(
+                short_arg="-if",
+                long_arg="--input-file",
+                action=None,
+                metavar="PATH",
+                type=str,
+                help="specify the file 📄 to crack 🔑",
+            ),
+        ),
+        ArgConfigSchema(
+            name="input",
+            config=ArgConfigSchema.ArgDetails(
+                short_arg="-i",
+                long_arg="--input",
+                action=None,
+                metavar="TEXT",
+                type=str,
+                help="specify the text 🅰 to crack 🔑",
             ),
         ),
     ]
@@ -111,7 +154,7 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
             prog="decipher",
             epilog="Enjoy deciphering! 😄",
             usage="%(prog)s [options] path",
-            description="An 💻 Open-Source tool for 🔓 cracking cipher-encrypted files.",
+            description="An 💻 open-source tool for 🔓 cracking cipher-encrypted files.",
         )
 
         for arg in self.config:
@@ -136,6 +179,40 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
         self.verbose: bool = True if self.args.verbose else False
 
         self.check_generate_dataset_arg_thread()
+        self.check_input()
+        self.check_train()
+
+    def check_train(self) -> None:
+        if self.args.train_model:
+            path: Final = r".decipher/dataset/nltk-corpus.csv"
+            print(f"Started training from dataset {path}")
+            model = DecipherModel()
+            print(f"Pickling to {model.model_file}")
+            if self.args.quick_train is not None:
+                print("Quick train is enabled")
+            model.train(
+                path,
+                total_classes=1000,
+                total_keys=100,
+                quick=True if self.args.quick_train is not None else False,
+            )
+            model.save()
+
+    def check_input(self) -> None:
+        if self.args.input is not None or self.args.input_file is not None:
+            loader = DecipherModelLoader()
+            result = loader.load()
+            if result is not None:
+                model, encrypted_encoder, source_encoder = result
+                print(model)
+            if result is None:
+                print("Found no model!")
+                return
+            if self.args.input is not None and model is not None:
+                print(model.run(self.args.input.split(" ")))
+            elif self.args.input_file is not None and model is not None:
+                with open(self.args.input_file) as file:
+                    print(" ".join(model.run(file.read().split())))
 
     def check_generate_dataset_arg_thread(self) -> None:
         """Checks if the user asked to generate the default dataset. (Thread-ready)
