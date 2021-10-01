@@ -44,20 +44,44 @@ git clone https://github.com/dwyl/english-words
 python -m decipher --generate-dataset --word-list english-words/words_alpha.txt
 ```
 
+## Training
+
+To train the model for `decipher`. Use the `--train` argument. This will scan for
+dataset and start the training process.
+
+```bash
+python -m decipher --train
+```
+
+### Speed up training
+
+To speed up the training process use the `--quick-train` argument. The will reduce
+the training complexity to make the process faster. Useful for training large
+dataset with limited computational power.
+
+```bash
+python -m decipher --train --quick-train
+```
+
 ## Usage
 
 ```
-usage: decipher [options] path
 
-An 💻 Open-Source tool for 🔓 cracking cipher-encrypted files.
+An 💻 open-source tool for 🔓 cracking cipher-encrypted files.
 
 optional arguments:
   -h, --help            show this help message and exit
-  -v, --verbose         Display verbose-level information
+  -v, --verbose         display verbose-level information
   -g, --generate-dataset
-                        generates the default (nltk.corpus) dataset for training
+                        generates the dataset for training
+  -qt, --quick-train    quickly train the model by reducing complexity
+  -t, --train-model     train the model (uses model_v1)
   -w PATH, --word-list PATH
-                        specify the word list file
+                        specify the word list file, default is nltk.corpus
+  -if PATH, --input-file PATH
+                        specify the file 📄 to crack 🔑
+  -i TEXT, --input TEXT
+                        specify the text 🅰 to crack 🔑
 
 Enjoy deciphering! 😄
 ```
