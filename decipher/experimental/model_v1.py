@@ -13,7 +13,7 @@ import sklearn.tree
 import sklearn.preprocessing
 import sklearn.feature_extraction.text
 
-from typing import Any, Final, Tuple
+from typing import Any, Final, List, Tuple
 
 numpy.random.seed(0)
 
@@ -73,9 +73,6 @@ class DecipherDataFrame(object):
 class DecipherModel(sklearn.tree.DecisionTreeClassifier):
     model_file: str = "model.pkl"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def train(self, path: str, total_classes: int, total_keys: int, quick: bool = True):
         self.dataframe = DecipherDataFrame(
             path=path, total_classes=total_classes, total_keys=total_keys,
@@ -98,12 +95,12 @@ class DecipherModel(sklearn.tree.DecisionTreeClassifier):
             pickle.dump(self, file)
 
     def load(self) -> DecipherModel:
-        with open(self.model_file, "rb") as fid:
-            return pickle.load(fid)
+        with open(self.model_file, "rb") as file:
+            return pickle.load(file)
 
-    def run(self, encrypted_text: str):
+    def run(self, encrypted_texts: List[str]):
         return self.dataframe.source_encoder.inverse_transform(
-            self.predict(self.dataframe.encrypted_encoder.transform([encrypted_text]))
+            self.predict(self.dataframe.encrypted_encoder.transform(encrypted_texts))
         )
 
 
@@ -117,4 +114,4 @@ if __name__ == "__main__":
     else:
         model.train(path, total_classes=1000, total_keys=100)
         model.save()
-    print(model.run("apple"))
+    print(model.run(["apple"]))
