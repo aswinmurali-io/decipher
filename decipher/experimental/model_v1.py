@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sklearnex import patch_sklearn
 
 patch_sklearn()
@@ -36,24 +37,28 @@ class DecipherDataFrame(object):
         )
 
         self.select_x_and_y()
-        self.encode()
 
     def select_x_and_y(self):
         self.x = self.dataframe["converted"]
         self.y = self.dataframe["source"]
 
-    def encode(self) -> Tuple[Any, numpy.ndarray]:
+    def encode(self, quick: bool) -> Tuple[Any, numpy.ndarray]:
         self.encrypted_encoder = sklearn.feature_extraction.text.TfidfVectorizer()
-        # self.source_encoder = sklearn.preprocessing.LabelEncoder()
-        self.source_encoder = sklearn.feature_extraction.text.TfidfVectorizer()
+
+        # To save training time
+        self.source_encoder = (
+            sklearn.preprocessing.LabelEncoder()
+            if quick
+            else sklearn.feature_extraction.text.TfidfVectorizer()
+        )
 
         x_encoded = self.encrypted_encoder.fit_transform(self.dataframe["converted"])
         y_encoded = self.source_encoder.fit_transform(self.dataframe["source"])
 
         return x_encoded, y_encoded
 
-    def split(self) -> Tuple[Any, Any, Any, Any]:
-        x_encoded, y_encoded = self.encode()
+    def split(self, quick: bool) -> Tuple[Any, Any, Any, Any]:
+        x_encoded, y_encoded = self.encode(quick)
 
         x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(
             x_encoded, y_encoded, test_size=0.3,
@@ -71,12 +76,12 @@ class DecipherModel(sklearn.tree.DecisionTreeClassifier):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def train(self, path: str, total_classes: int, total_keys: int):
+    def train(self, path: str, total_classes: int, total_keys: int, quick: bool = True):
         self.dataframe = DecipherDataFrame(
             path=path, total_classes=total_classes, total_keys=total_keys,
         )
 
-        x_train, x_test, y_train, y_test = self.dataframe.split()
+        x_train, x_test, y_train, y_test = self.dataframe.split(quick=quick)
 
         self.fit(x_train, y_train)
         self.get_performance(x_test, y_test)
@@ -92,7 +97,7 @@ class DecipherModel(sklearn.tree.DecisionTreeClassifier):
         with open(self.model_file, "wb") as file:
             pickle.dump(self, file)
 
-    def load(self) -> sklearn.tree.DecisionTreeClassifier:
+    def load(self) -> DecipherModel:
         with open(self.model_file, "rb") as fid:
             return pickle.load(fid)
 
