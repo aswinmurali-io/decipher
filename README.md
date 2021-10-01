@@ -16,6 +16,29 @@ An 💻open-source tool for 🔓 cracking cipher-encrypted files.
 Do you like the project? :)</br>
 [![GitHub stars](https://img.shields.io/github/stars/aswinmurali-io/decipher.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/aswinmurali-io/decipher.svg/stargazers/)
 
+## Cracking
+
+To decrypt a string. Use the `--input` to command to specify the input string.
+
+```bash
+python -m decipher --input "Encrypted text here"
+```
+
+```bash
+python -m decipher -i "Encrypted text here"
+```
+
+To decrypt a text file. Use the `--input-file` to command to specify the file path.
+
+```bash
+python -m decipher --input-file test.txt
+```
+
+<!-- cannot annotate lang parameter here -if highlighted-->
+```
+python -m decipher -if test.txt
+```
+
 ## Setup
 
 If you don't have `conda` install Miniconda from [here](https://docs.conda.io/en/latest/miniconda.html)
