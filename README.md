@@ -16,6 +16,28 @@ An 💻open-source tool for 🔓 cracking cipher-encrypted files.
 Do you like the project? :)</br>
 [![GitHub stars](https://img.shields.io/github/stars/aswinmurali-io/decipher.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/aswinmurali-io/decipher.svg/stargazers/)
 
+## Usage
+
+```
+An 💻 open-source tool for 🔓 cracking cipher-encrypted files.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --verbose         display verbose-level information
+  -g, --generate-dataset
+                        generates the dataset for training
+  -qt, --quick-train    quickly train the model by reducing complexity
+  -t, --train-model     train the model (uses model_v1)
+  -w PATH, --word-list PATH
+                        specify the word list file, default is nltk.corpus
+  -if PATH, --input-file PATH
+                        specify the file 📄 to crack 🔑
+  -i TEXT, --input TEXT
+                        specify the text 🅰 to crack 🔑
+
+Enjoy deciphering! 😄
+```
+
 ## Cracking
 
 To decrypt a string. Use the `--input` to command to specify the input string.
@@ -84,27 +106,4 @@ dataset with limited computational power.
 
 ```bash
 python -m decipher --train --quick-train
-```
-
-## Usage
-
-```
-
-An 💻 open-source tool for 🔓 cracking cipher-encrypted files.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -v, --verbose         display verbose-level information
-  -g, --generate-dataset
-                        generates the dataset for training
-  -qt, --quick-train    quickly train the model by reducing complexity
-  -t, --train-model     train the model (uses model_v1)
-  -w PATH, --word-list PATH
-                        specify the word list file, default is nltk.corpus
-  -if PATH, --input-file PATH
-                        specify the file 📄 to crack 🔑
-  -i TEXT, --input TEXT
-                        specify the text 🅰 to crack 🔑
-
-Enjoy deciphering! 😄
 ```
