@@ -10,6 +10,7 @@ import decipher.utils.generator as gen
 from typing import Any, Final, Optional
 from argparse import Namespace
 from dataclasses import dataclass
+from decipher.utils.generator import dataset_filename
 from decipher.utils.singleton import Singleton
 from decipher.utils.loader import DecipherModelLoader
 from decipher.experimental.model_v1 import DecipherModel
@@ -184,7 +185,7 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
 
     def check_train(self) -> None:
         if self.args.train_model:
-            path: Final = r".decipher/dataset/nltk-corpus.csv"
+            path: Final = f".decipher/dataset/{dataset_filename}"
             print(f"Started training from dataset {path}")
             model = DecipherModel()
             print(f"Pickling to {model.model_file}")
