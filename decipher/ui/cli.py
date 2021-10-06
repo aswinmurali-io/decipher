@@ -11,10 +11,12 @@ from typing import Any, Final, Optional
 from argparse import Namespace
 from dataclasses import dataclass
 from decipher.utils.generator import dataset_filename
-from decipher.utils.singleton import Singleton
+from decipher.utils.snips import Singleton
 from decipher.utils.loader import DecipherModelLoader
 from decipher.experimental.model_v1 import DecipherModel
 from multiprocessing.managers import ValueProxy
+from caesarcipher import CaesarCipher
+from Cryptokit.VigenereCipher import v_dictionaryattack
 
 
 @dataclass
@@ -127,6 +129,15 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
             ),
         ),
         ArgConfigSchema(
+            name="brute",
+            config=ArgConfigSchema.ArgDetails(
+                short_arg="-b",
+                long_arg="--boost",
+                action="store_true",
+                help="",
+            ),
+        ),
+        ArgConfigSchema(
             name="input_file",
             config=ArgConfigSchema.ArgDetails(
                 short_arg="-if",
@@ -180,8 +191,15 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
         self.verbose: bool = True if self.args.verbose else False
 
         self.check_generate_dataset_arg_thread()
-        self.check_input()
+        if not self.args.brute:
+            self.check_input()
+        else:
+            self.check_input_for_brute()
         self.check_train()
+
+    def check_input_for_brute(self) -> None:
+        print(CaesarCipher(self.args.input).cracked)
+        # print(v_dictionaryattack(self.args.input))
 
     def check_train(self) -> None:
         if self.args.train_model:
