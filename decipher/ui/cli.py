@@ -129,7 +129,7 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
             ),
         ),
         ArgConfigSchema(
-            name="brute",
+            name="boost",
             config=ArgConfigSchema.ArgDetails(
                 short_arg="-b",
                 long_arg="--boost",
@@ -191,7 +191,7 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
         self.verbose: bool = True if self.args.verbose else False
 
         self.check_generate_dataset_arg_thread()
-        if not self.args.brute:
+        if not self.args.boost:
             self.check_input()
         else:
             self.check_input_for_brute()
