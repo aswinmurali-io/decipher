@@ -2,7 +2,6 @@
 ![Generic badge](https://img.shields.io/badge/welcome-decipher-green.svg)
 [![GitHub License](https://img.shields.io/github/license/aswinmurali-io/decipher.svg)](https://github.com/aswinmurali-io/decipher/blob/master/LICENSE)
 [![Maintenance](https://img.shields.io/badge/maintained-yes-green.svg)](https://github.com/aswinmurali-io/decipher/graphs/commit-activity)
-</br>
 # Decipher
 An 💻open-source tool for 🔓 cracking cipher-encrypted files.
 
