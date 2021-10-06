@@ -198,7 +198,10 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
         self.check_train()
 
     def check_input_for_brute(self) -> None:
-        print(CaesarCipher(self.args.input).cracked)
+        if self.args.input_file is not None:
+            print(CaesarCipher(open(self.args.input_file).read()).cracked)
+        else:
+            print(CaesarCipher(self.args.input).cracked)
         # print(v_dictionaryattack(self.args.input))
 
     def check_train(self) -> None:
