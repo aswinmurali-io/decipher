@@ -2,6 +2,7 @@
 .decipher/
 words_alpha.txt
 test.txt
+sample.txt
 
 # Model files
 *.pkl
