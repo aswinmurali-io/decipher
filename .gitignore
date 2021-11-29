@@ -16,6 +16,7 @@ __pycache__/
 *.csv
 x
 y
+model.png
 
 # C extensions
 *.so
