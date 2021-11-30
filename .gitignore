@@ -17,6 +17,7 @@ __pycache__/
 x
 y
 model.png
+*.tf
 
 # C extensions
 *.so
