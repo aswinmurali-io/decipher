@@ -18,6 +18,7 @@ x
 y
 model.png
 *.tf
+*.pickle
 
 # C extensions
 *.so
