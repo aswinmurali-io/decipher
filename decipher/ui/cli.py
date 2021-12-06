@@ -14,9 +14,13 @@ from decipher.utils.generator import dataset_filename
 from decipher.utils.snips import Singleton
 from decipher.utils.loader import DecipherModelLoader
 from decipher.experimental.model_v1 import DecipherModel
+from decipher.utils.vig import hack
 from multiprocessing.managers import ValueProxy
 from caesarcipher import CaesarCipher
-from Cryptokit.VigenereCipher import v_dictionaryattack
+
+import language_tool_python
+
+tool: Final = language_tool_python.LanguageTool("en-US")
 
 
 @dataclass
@@ -131,10 +135,7 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
         ArgConfigSchema(
             name="boost",
             config=ArgConfigSchema.ArgDetails(
-                short_arg="-b",
-                long_arg="--boost",
-                action="store_true",
-                help="",
+                short_arg="-b", long_arg="--boost", action="store_true", help="",
             ),
         ),
         ArgConfigSchema(
@@ -157,6 +158,15 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
                 metavar="TEXT",
                 type=str,
                 help="specify the text 🅰 to crack 🔑",
+            ),
+        ),
+        ArgConfigSchema(
+            name="check_grammar",
+            config=ArgConfigSchema.ArgDetails(
+                short_arg="-c",
+                long_arg="--check-grammar",
+                action="store_true",
+                help="correct grammar from text 👀.",
             ),
         ),
     ]
@@ -188,21 +198,36 @@ class DecipherParserThread(argparse.ArgumentParser, metaclass=Singleton):
 
         self.args: Namespace = self.parse_args(sys.argv[1:])
 
-        self.verbose: bool = True if self.args.verbose else False
+        self.verbose: bool = bool(self.args.verbose)
 
         self.check_generate_dataset_arg_thread()
         if not self.args.boost:
-            self.check_input()
+            print("Vig")
+            self.check_input_for_vig()
         else:
-            self.check_input_for_brute()
+            print("Caser")
+            self.check_input_for_caser()
         self.check_train()
 
-    def check_input_for_brute(self) -> None:
+    def check_input_for_vig(self) -> None:
+        if self.args.input_file is not None:
+            if self.args.check_grammar:
+                print("Auto correct grammar...")
+                print(tool.correct(hack(open(self.args.input_file).read())))
+            else:
+                print(hack(open(self.args.input_file).read()))
+        else:
+            if self.args.check_grammar:
+                print("Auto correct grammar...")
+                print(tool.correct(hack(self.args.input)))
+            else:
+                print(hack(self.args.input))
+
+    def check_input_for_caser(self) -> None:
         if self.args.input_file is not None:
             print(CaesarCipher(open(self.args.input_file).read()).cracked)
         else:
             print(CaesarCipher(self.args.input).cracked)
-        # print(v_dictionaryattack(self.args.input))
 
     def check_train(self) -> None:
         if self.args.train_model:
